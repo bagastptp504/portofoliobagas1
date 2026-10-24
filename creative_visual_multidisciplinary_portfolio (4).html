@@ -1,0 +1,1533 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Randy Fahmi - Creative Visual & IT Specialist Portfolio</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        burgundy: {
+                            500: '#e11d48',
+                            800: '#9f1239',
+                            900: '#8b1538',
+                            950: '#4c0519',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0b0b0e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a2a36;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b1538;
+        }
+
+        /* KEYFRAME ANIMATIONS */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-12px) rotate(0.8deg); }
+        }
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.35; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        .animate-pulse-glow {
+            animation: pulseGlow 8s ease-in-out infinite;
+        }
+        .animated-gradient-text {
+            background-size: 200% 200%;
+            animation: gradientShift 5s ease infinite;
+        }
+
+        /* SCROLL REVEAL UTILITIES */
+        .reveal {
+            opacity: 0;
+            transform: translateY(35px);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1), transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            will-change: opacity, transform;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+
+        /* CARD SPOTLIGHT & SHIMMER EFFECT */
+        .shimmer-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+            transform: translateX(-100%);
+        }
+        .shimmer-btn:hover::after {
+            animation: shimmer 1.2s ease-in-out;
+        }
+
+        /* SKILL BAR ANIMATION INITIAL STATE */
+        .skill-bar-inner {
+            width: 0%;
+            transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* GRID ITEM TRANSITION FOR FILTERING */
+        .portfolio-card-item {
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+        .portfolio-card-item.filter-hide {
+            opacity: 0;
+            transform: scale(0.92);
+            pointer-events: none;
+            position: absolute;
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body class="bg-[#0b0b0e] text-slate-100 font-sans selection:bg-[#8b1538] selection:text-white relative overflow-x-hidden min-h-screen">
+
+    <!-- TOP SCROLL PROGRESS BAR -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-rose-600 via-amber-400 to-rose-500 z-50 transition-all duration-150 w-0"></div>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-[#8b1538] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-pink-500/30 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-300"></i>
+        <span id="toast-message" class="text-sm font-medium">Notifikasi</span>
+    </div>
+
+    <!-- HEADER / NAVIGATION -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-[#0b0b0e]/80 border-b border-white/10 transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo (Triple Click untuk Akses Admin Page) -->
+            <a href="#hero" id="brand-logo" class="flex items-center gap-2 group cursor-pointer" title="Randy Fahmi Portfolio">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#8b1538] to-[#e11d48] flex items-center justify-center font-bold text-white shadow-lg shadow-rose-900/40 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                    RF
+                </div>
+                <div class="flex flex-col">
+                    <span class="font-extrabold tracking-wider text-base uppercase bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-200 to-slate-400">
+                        RANDY FAHMI
+                    </span>
+                    <span class="text-[10px] text-rose-400 font-semibold tracking-widest uppercase -mt-1">
+                        Visual & IT Specialist
+                    </span>
+                </div>
+            </a>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex items-center gap-8 text-sm font-medium">
+                <a href="#hero" class="nav-link text-slate-300 hover:text-white transition-colors relative py-1" data-section="hero">Beranda</a>
+                <a href="#portfolio" class="nav-link text-slate-300 hover:text-white transition-colors relative py-1" data-section="portfolio">Portofolio</a>
+                <a href="#about" class="nav-link text-slate-300 hover:text-white transition-colors relative py-1" data-section="about">Tentang & Keahlian</a>
+                <a href="#contact" class="nav-link text-slate-300 hover:text-white transition-colors relative py-1" data-section="contact">Kontak</a>
+            </nav>
+
+            <!-- Action Buttons -->
+            <div class="hidden md:flex items-center gap-3">
+                <button onclick="toggleQrModal(true)" class="p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-rose-500/50 text-slate-200 hover:scale-105 active:scale-95 transition-all" title="Scan Contact QR">
+                    <i data-lucide="qr-code" class="w-5 h-5 text-rose-400"></i>
+                </button>
+                <a href="#contact" class="shimmer-btn px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] hover:opacity-95 font-medium text-sm text-white shadow-md shadow-rose-900/30 transition-all flex items-center gap-2 hover:scale-105 active:scale-95">
+                    <span>Mari Bekerjasama</span>
+                    <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                </a>
+            </div>
+
+            <!-- Mobile Hamburger Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg bg-white/5 text-slate-200 border border-white/10 hover:bg-white/10 active:scale-90 transition-transform">
+                <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-[#121218] border-b border-white/10 px-6 py-6 flex-col gap-4">
+            <a href="#hero" onclick="toggleMobileMenu()" class="text-base font-medium text-slate-200 hover:text-rose-400 py-1">Beranda</a>
+            <a href="#portfolio" onclick="toggleMobileMenu()" class="text-base font-medium text-slate-200 hover:text-rose-400 py-1">Portofolio</a>
+            <a href="#about" onclick="toggleMobileMenu()" class="text-base font-medium text-slate-200 hover:text-rose-400 py-1">Tentang & Keahlian</a>
+            <a href="#contact" onclick="toggleMobileMenu()" class="text-base font-medium text-slate-200 hover:text-rose-400 py-1">Kontak</a>
+            
+            <div class="pt-4 border-t border-white/10 flex flex-col gap-3">
+                <button onclick="toggleQrModal(true); toggleMobileMenu();" class="w-full py-2.5 px-4 rounded-xl bg-white/5 border border-white/10 text-slate-200 flex items-center justify-center gap-2 text-sm">
+                    <i data-lucide="qr-code" class="w-4 h-4 text-rose-400"></i>
+                    <span>Quick Scan QR Kontak</span>
+                </button>
+                <button onclick="downloadCV()" class="w-full py-2.5 px-4 rounded-xl bg-rose-900/40 border border-rose-500/40 text-rose-200 flex items-center justify-center gap-2 text-sm font-medium">
+                    <i data-lucide="download" class="w-4 h-4"></i>
+                    <span>Unduh CV/Resume</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section id="hero" class="relative pt-12 pb-24 md:pt-20 md:pb-32 overflow-hidden">
+        <!-- Interactive Hero Canvas Background -->
+        <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-40 z-0"></canvas>
+
+        <!-- Ambient Glow Orbs -->
+        <div class="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-rose-900/20 rounded-full blur-[130px] pointer-events-none animate-pulse-glow"></div>
+        <div class="absolute top-1/3 right-10 w-[350px] h-[350px] bg-amber-600/10 rounded-full blur-[110px] pointer-events-none animate-pulse-glow" style="animation-delay: 2s;"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <!-- Left Hero Bio -->
+                <div class="lg:col-span-7 flex flex-col items-start space-y-6">
+                    <div class="reveal reveal-delay-1 inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs font-semibold uppercase tracking-wider shadow-lg shadow-rose-950/50">
+                        <i data-lucide="sparkles" class="w-3.5 h-3.5 text-rose-400 animate-spin" style="animation-duration: 8s;"></i>
+                        <span id="hero-role-badge">Creative Visual & IT Specialist</span>
+                    </div>
+
+                    <h1 class="reveal reveal-delay-2 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-[1.15]">
+                        Bringing Ideas To Life Through 
+                        <span id="hero-tagline-text" class="animated-gradient-text bg-clip-text text-transparent bg-gradient-to-r from-rose-400 via-amber-300 via-rose-300 to-rose-500">
+                            Visual Mastery
+                        </span> 
+                        & Tech Innovation.
+                    </h1>
+
+                    <p id="hero-bio-paragraph" class="reveal reveal-delay-3 text-slate-300 text-base sm:text-lg max-w-2xl leading-relaxed">
+                        Halo! Saya <strong id="profile-name-hero" class="text-white">Randy Fahmi</strong>, seorang desainer multidisiplin dengan rekam jejak lebih dari 9 tahun di bidang <span class="text-rose-300">Graphic Design</span>, <span class="text-rose-300">Photography</span>, <span class="text-rose-300">Video Production</span>, dan pengembangan <span class="text-rose-300">Aset Digital / IT</span>.
+                    </p>
+
+                    <!-- CTAs -->
+                    <div class="reveal reveal-delay-4 flex flex-wrap items-center gap-4 pt-2 w-full sm:w-auto">
+                        <a href="#contact" class="shimmer-btn w-full sm:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] hover:from-rose-700 hover:to-rose-500 text-white font-bold text-base shadow-lg shadow-rose-900/40 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 group">
+                            <span>Let's Work Together</span>
+                            <i data-lucide="chevron-right" class="w-5 h-5 group-hover:translate-x-1 transition-transform"></i>
+                        </a>
+
+                        <button onclick="downloadCV()" class="w-full sm:w-auto px-6 py-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-slate-200 font-semibold text-base transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95">
+                            <i data-lucide="download" class="w-5 h-5 text-rose-400"></i>
+                            <span>Download CV</span>
+                        </button>
+
+                        <button onclick="toggleQrModal(true)" class="w-full sm:w-auto p-4 rounded-xl bg-white/5 hover:bg-white/10 border border-white/15 text-rose-300 transition-all flex items-center justify-center gap-2 hover:scale-105 active:scale-95" title="Quick Contact Scan">
+                            <i data-lucide="qr-code" class="w-5 h-5"></i>
+                            <span class="sm:hidden text-sm font-medium text-slate-200">Scan QR Contact</span>
+                        </button>
+                    </div>
+
+                    <!-- Hero Stats Counter -->
+                    <div class="reveal reveal-delay-4 pt-8 grid grid-cols-3 gap-6 border-t border-white/10 w-full max-w-xl">
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-white counter" data-target="9">0</div>
+                            <div class="text-xs text-slate-400 font-medium mt-0.5">Tahun Pengalaman</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-rose-400 counter" data-target="120">0</div>
+                            <div class="text-xs text-slate-400 font-medium mt-0.5">Proyek Selesai</div>
+                        </div>
+                        <div>
+                            <div class="text-2xl sm:text-3xl font-extrabold text-white counter" data-target="45">0</div>
+                            <div class="text-xs text-slate-400 font-medium mt-0.5">Klien Puas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hero Animated Visual Frame -->
+                <div class="lg:col-span-5 relative reveal reveal-delay-2">
+                    <div class="relative mx-auto max-w-md lg:max-w-none animate-float">
+                        <div class="absolute -inset-1 bg-gradient-to-r from-rose-600 via-amber-500 to-rose-700 rounded-3xl blur-xl opacity-50 group-hover:opacity-100 transition duration-1000"></div>
+
+                        <div class="relative rounded-3xl bg-[#14141c] border border-white/15 p-4 shadow-2xl overflow-hidden">
+                            <div class="relative h-96 sm:h-[420px] rounded-2xl overflow-hidden group">
+                                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=1000&q=80" alt="Randy Fahmi Profile Visual" class="w-full h-full object-cover object-center transform group-hover:scale-110 transition-transform duration-700">
+                                <div class="absolute inset-0 bg-gradient-to-t from-[#0b0b0e] via-transparent to-transparent opacity-90"></div>
+
+                                <div class="absolute bottom-4 left-4 right-4 p-4 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-between shadow-lg transform group-hover:translate-y-[-2px] transition-transform">
+                                    <div>
+                                        <div class="text-xs text-rose-300 font-bold uppercase tracking-wider">
+                                            Dominant Skillset
+                                        </div>
+                                        <div class="text-sm font-semibold text-white">
+                                            Design • Photo • Video • IT
+                                        </div>
+                                    </div>
+                                    <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- PORTFOLIO SHOWCASE SECTION -->
+    <section id="portfolio" class="py-20 bg-[#0f0f15] border-y border-white/10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="reveal flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-widest mb-2">
+                        <i data-lucide="briefcase" class="w-4 h-4"></i>
+                        <span>Showcase Karya Visual & IT</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+                        Galeri Portofolio
+                    </h2>
+                </div>
+                <p class="text-slate-400 text-sm max-w-md">
+                    Eksplorasi karya terintegrasi mencakup desain grafis branding, fotografi komersial, produksi video, dan solusi IT digital.
+                </p>
+            </div>
+
+            <!-- Filter Tabs & Search Bar -->
+            <div class="reveal reveal-delay-1 flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-8">
+                <!-- Category Filters -->
+                <div id="filter-container" class="flex flex-wrap items-center gap-2">
+                    <!-- Dynamic rendering by JS -->
+                </div>
+
+                <!-- Search Input -->
+                <div class="relative w-full lg:w-72">
+                    <i data-lucide="search" class="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                    <input type="text" id="search-input" oninput="handleSearch(this.value)" placeholder="Cari nama proyek atau klien..." class="w-full bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-rose-500/80 transition-colors">
+                </div>
+            </div>
+
+            <!-- Portfolio Grid -->
+            <div id="portfolio-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[300px]">
+                <!-- Dynamic cards rendered by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT & SKILLS SECTION -->
+    <section id="about" class="py-20 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                
+                <!-- Left: Bio & Experience -->
+                <div class="lg:col-span-5 space-y-8 reveal">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-widest mb-2">
+                            <i data-lucide="user" class="w-4 h-4"></i>
+                            <span>Tentang Profil Saya</span>
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-white">
+                            Kombinasi Estetika Visual & Presisi Teknis.
+                        </h2>
+                    </div>
+
+                    <div class="space-y-4 text-slate-300 text-sm leading-relaxed">
+                        <p>
+                            Saya berpengalaman mengintegrasikan pemikiran desain kreatif (<em>design thinking</em>) dengan eksekusi teknis presisi tinggi. Mulai dari membangun identitas visual brand, produksi foto/video komersial, hingga merancang aset web modern.
+                        </p>
+                        <p>
+                            Pendekatan multidisiplin ini memungkinkan setiap karya tidak hanya menarik secara estetika, namun juga efisien dan berdampak langsung pada tujuan komunikasi klien.
+                        </p>
+                    </div>
+
+                    <!-- Work Experience Timeline -->
+                    <div class="space-y-4 pt-4 border-t border-white/10">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-rose-300">
+                            Pengalaman Kerja
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="relative pl-6 border-l-2 border-rose-900/60 space-y-1 group">
+                                <div class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-rose-500 group-hover:scale-125 transition-transform"></div>
+                                <div class="text-xs text-rose-400 font-semibold">2021 - Present</div>
+                                <div class="text-sm font-bold text-white">Lead Visual Designer & IT Specialist</div>
+                                <div class="text-xs text-slate-400">Creative Wave Studio</div>
+                                <p class="text-xs text-slate-400 leading-relaxed pt-1">Directing visual identities, video productions, and digital assets for top-tier retail and corporate clients across SEA.</p>
+                            </div>
+
+                            <div class="relative pl-6 border-l-2 border-rose-900/60 space-y-1 group">
+                                <div class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-rose-500 group-hover:scale-125 transition-transform"></div>
+                                <div class="text-xs text-rose-400 font-semibold">2018 - 2021</div>
+                                <div class="text-sm font-bold text-white">Senior Digital Media Specialist</div>
+                                <div class="text-xs text-slate-400">Nexus Media Agency</div>
+                                <p class="text-xs text-slate-400 leading-relaxed pt-1">Managed commercial photo shoots, video marketing campaigns, and interactive web landing pages.</p>
+                            </div>
+
+                            <div class="relative pl-6 border-l-2 border-rose-900/60 space-y-1 group">
+                                <div class="absolute -left-[7px] top-1 w-3 h-3 rounded-full bg-rose-500 group-hover:scale-125 transition-transform"></div>
+                                <div class="text-xs text-rose-400 font-semibold">2015 - 2018</div>
+                                <div class="text-sm font-bold text-white">Graphic Designer & Photographer</div>
+                                <div class="text-xs text-slate-400">Studio Pixel Art</div>
+                                <p class="text-xs text-slate-400 leading-relaxed pt-1">Crafted brand assets, packaging, event photography, and promotional motion graphics.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Animated Skills Matrix -->
+                <div id="skills-section" class="lg:col-span-7 bg-[#14141c] border border-white/10 rounded-3xl p-6 sm:p-8 space-y-6 reveal reveal-delay-2 shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Keahlian & Kompetensi Utama</h3>
+                            <p class="text-slate-400 text-xs">Evaluasi tingkat penguasaan perangkat & metodologi</p>
+                        </div>
+                        <i data-lucide="award" class="w-6 h-6 text-rose-400"></i>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Skill Item -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3 hover:border-rose-500/30 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-500/20">
+                                        <i data-lucide="palette" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-200">Graphic Design & Branding</span>
+                                </div>
+                                <span class="text-xs font-semibold text-rose-400">95%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="skill-bar-inner h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full" data-width="95%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3 hover:border-rose-500/30 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-500/20">
+                                        <i data-lucide="camera" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-200">Photography & Lighting</span>
+                                </div>
+                                <span class="text-xs font-semibold text-rose-400">90%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="skill-bar-inner h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full" data-width="90%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3 hover:border-rose-500/30 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-500/20">
+                                        <i data-lucide="video" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-200">Video Editing & Motion</span>
+                                </div>
+                                <span class="text-xs font-semibold text-rose-400">88%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="skill-bar-inner h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full" data-width="88%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3 hover:border-rose-500/30 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-500/20">
+                                        <i data-lucide="sparkles" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-200">Social Media Strategy</span>
+                                </div>
+                                <span class="text-xs font-semibold text-rose-400">92%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="skill-bar-inner h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full" data-width="92%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3 hover:border-rose-500/30 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-500/20">
+                                        <i data-lucide="code" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-200">Frontend Dev & IT Systems</span>
+                                </div>
+                                <span class="text-xs font-semibold text-rose-400">85%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="skill-bar-inner h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full" data-width="85%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Skill Item -->
+                        <div class="p-4 rounded-2xl bg-white/5 border border-white/5 space-y-3 hover:border-rose-500/30 transition-colors">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 rounded-xl bg-rose-950/80 text-rose-400 border border-rose-500/20">
+                                        <i data-lucide="layers" class="w-4 h-4"></i>
+                                    </div>
+                                    <span class="text-xs font-bold text-slate-200">UI/UX & Digital Assets</span>
+                                </div>
+                                <span class="text-xs font-semibold text-rose-400">89%</span>
+                            </div>
+                            <div class="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
+                                <div class="skill-bar-inner h-full bg-gradient-to-r from-rose-600 to-amber-500 rounded-full" data-width="89%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tools Badges -->
+                    <div class="pt-4 border-t border-white/10">
+                        <div class="text-xs text-slate-400 font-semibold mb-3">Software & Tools:</div>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Adobe Photoshop</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Adobe Illustrator</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Premiere Pro</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">After Effects</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Lightroom</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Figma</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Blender</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">React.js</span>
+                            <span class="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-slate-300 font-medium hover:bg-rose-950/40 hover:border-rose-500/40 transition-all cursor-default">Tailwind CSS</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT SECTION -->
+    <section id="contact" class="py-20 bg-[#0d0d12] border-t border-white/10 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                
+                <!-- Contact Direct Info -->
+                <div class="lg:col-span-5 space-y-8 reveal">
+                    <div>
+                        <div class="inline-flex items-center gap-2 text-rose-400 font-bold text-xs uppercase tracking-widest mb-2">
+                            <i data-lucide="mail" class="w-4 h-4"></i>
+                            <span>Mulai Diskusi Project</span>
+                        </div>
+                        <h2 class="text-3xl font-extrabold text-white">Hubungi Saya</h2>
+                        <p class="text-slate-400 text-sm mt-2">
+                            Apakah Anda membutuhkan jasa desain grafis, sesi fotografi/videografi, atau pengembangan portal web IT?
+                        </p>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-rose-500/30 transition-all">
+                            <div class="p-3 rounded-xl bg-rose-950 text-rose-400">
+                                <i data-lucide="mail" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">Email Profesional</div>
+                                <a href="mailto:randy.fahmi@example.com" class="text-sm font-bold text-white hover:text-rose-300 transition-colors">
+                                    randy.fahmi@example.com
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-rose-500/30 transition-all">
+                            <div class="p-3 rounded-xl bg-rose-950 text-rose-400">
+                                <i data-lucide="phone" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">WhatsApp / Phone</div>
+                                <a href="https://wa.me/6281234567890" target="_blank" rel="noreferrer" class="text-sm font-bold text-white hover:text-rose-300 transition-colors">
+                                    +62 812-3456-7890
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 hover:border-rose-500/30 transition-all">
+                            <div class="p-3 rounded-xl bg-rose-950 text-rose-400">
+                                <i data-lucide="map-pin" class="w-5 h-5"></i>
+                            </div>
+                            <div>
+                                <div class="text-xs text-slate-400 font-medium">Domisili</div>
+                                <span class="text-sm font-bold text-white">Jakarta / Indonesia</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Lynkid Integration Badge -->
+                    <div class="p-5 rounded-2xl bg-gradient-to-r from-rose-950/80 to-slate-900 border border-rose-500/30 flex items-center justify-between shadow-lg">
+                        <div>
+                            <div class="text-xs font-bold uppercase tracking-wider text-rose-300">
+                                Lynkid / External Hub
+                            </div>
+                            <div id="lynkid-handle-display" class="text-sm font-extrabold text-white">lynkid/randy_fahmi</div>
+                        </div>
+                        <a id="lynkid-link-btn" href="https://lynkid.me" target="_blank" rel="noreferrer" class="shimmer-btn px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-all flex items-center gap-1.5 hover:scale-105 active:scale-95">
+                            <span>Buka Link</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="lg:col-span-7 bg-[#14141c] border border-white/10 rounded-3xl p-6 sm:p-8 shadow-2xl reveal reveal-delay-2">
+                    <h3 class="text-xl font-bold text-white mb-6">Kirim Pesan Langsung</h3>
+
+                    <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1.5">Nama Lengkap</label>
+                                <input type="text" id="form-name" required placeholder="Masukkan nama Anda" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 transition-colors">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1.5">Email Anda</label>
+                                <input type="email" id="form-email" required placeholder="email@domain.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 transition-colors">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Kategori Layanan yang Dibutuhkan</label>
+                            <select id="form-service" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                                <option value="Graphic Design">Graphic Design & Branding</option>
+                                <option value="Photography">Commercial Photography</option>
+                                <option value="Video Production">Video Production & Motion</option>
+                                <option value="IT Digital Assets">IT Web Development & Digital Assets</option>
+                                <option value="Full Package">Full Multidisciplinary Package</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Pesan & Detail Proyek</label>
+                            <textarea id="form-message" rows="4" required placeholder="Jelaskan kebutuhan proyek, tenggat waktu, atau pertanyaan Anda..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-rose-500 transition-colors resize-none"></textarea>
+                        </div>
+
+                        <button type="submit" id="submit-btn" class="shimmer-btn w-full py-4 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] hover:opacity-95 font-bold text-white text-sm shadow-lg shadow-rose-950 transition-all flex items-center justify-center gap-2 hover:scale-[1.01] active:scale-95">
+                            <i data-lucide="send" class="w-4 h-4"></i>
+                            <span id="btn-text">Kirim Pesan Sekarang</span>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-4">
+                <div>
+                    © 2026 <strong id="footer-name-display" class="text-slate-300">Randy Fahmi</strong>. All rights reserved.
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="#hero" class="hover:text-rose-400 transition-colors">Instagram</a>
+                    <a href="#hero" class="hover:text-rose-400 transition-colors">LinkedIn</a>
+                    <a href="#hero" class="hover:text-rose-400 transition-colors">Behance</a>
+                    <a href="#hero" class="hover:text-rose-400 transition-colors">Dribbble</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ADMIN PANEL MODAL (CMS) -->
+    <div id="admin-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
+        <div class="relative w-full max-w-4xl max-h-[90vh] bg-[#12121a] border border-rose-500/30 rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="admin-modal-card">
+            
+            <!-- Admin Modal Header -->
+            <div class="p-4 px-6 border-b border-white/10 flex items-center justify-between bg-[#181824]">
+                <div class="flex items-center gap-3">
+                    <div class="p-2 rounded-xl bg-rose-950 text-rose-400 border border-rose-500/30">
+                        <i data-lucide="settings" class="w-5 h-5"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-extrabold text-white">Panel Admin Portofolio</h3>
+                        <p class="text-xs text-slate-400">Kelola identitas profil, nama pemilik, dan kelola postingan karya</p>
+                    </div>
+                </div>
+                <button onclick="toggleAdminModal(false)" class="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Admin Modal Navigation Tabs -->
+            <div class="flex border-b border-white/10 bg-[#14141e] px-6">
+                <button onclick="switchAdminTab('profile')" id="tab-btn-profile" class="py-3 px-5 text-xs font-bold border-b-2 border-rose-500 text-rose-400 flex items-center gap-2 transition-colors">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                    <span>Edit Profil & Identitas</span>
+                </button>
+                <button onclick="switchAdminTab('projects')" id="tab-btn-projects" class="py-3 px-5 text-xs font-bold border-b-2 border-transparent text-slate-400 hover:text-white flex items-center gap-2 transition-colors">
+                    <i data-lucide="folder-plus" class="w-4 h-4"></i>
+                    <span>Kelola Karya & Posting</span>
+                </button>
+            </div>
+
+            <!-- Admin Modal Body -->
+            <div class="p-6 overflow-y-auto space-y-6 flex-1 bg-[#12121a]">
+                
+                <!-- TAB 1: EDIT PROFIL -->
+                <div id="admin-tab-profile" class="space-y-5">
+                    <form onsubmit="handleSaveProfileSettings(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Lengkap</label>
+                                <input type="text" id="admin-profile-name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Spesialisasi / Role Badge</label>
+                                <input type="text" id="admin-profile-role" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Tagline Hero Visual</label>
+                            <input type="text" id="admin-profile-tagline" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Bio Perkenalan Ringkas (Hero)</label>
+                            <textarea id="admin-profile-bio" rows="3" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Email Kontak</label>
+                                <input type="email" id="admin-profile-email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">No. WhatsApp / Telepon</label>
+                                <input type="text" id="admin-profile-phone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Domisili</label>
+                                <input type="text" id="admin-profile-location" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1">Lynkid Handle / Hub</label>
+                            <input type="text" id="admin-profile-lynkid" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-rose-500">
+                        </div>
+
+                        <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+                            <button type="button" onclick="resetToDefaultData()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 font-semibold transition-all">
+                                Reset ke Default Demo
+                            </button>
+                            <button type="submit" class="shimmer-btn px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] text-xs font-bold text-white shadow-lg">
+                                Simpan Perubahan Profil
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- TAB 2: KELOLA PORTOFOLIO -->
+                <div id="admin-tab-projects" class="space-y-6 hidden">
+                    <!-- Project Form (Create / Edit) -->
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/10 space-y-4">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                            <h4 id="project-form-title" class="text-sm font-bold text-white">Posting Karya Baru</h4>
+                            <button id="cancel-edit-btn" onclick="resetProjectForm()" type="button" class="text-xs text-rose-400 hover:underline hidden">
+                                Batal Edit
+                            </button>
+                        </div>
+
+                        <form onsubmit="handleSaveProjectFromAdmin(event)" class="space-y-4">
+                            <input type="hidden" id="admin-project-id" value="">
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Judul Karya / Proyek</label>
+                                    <input type="text" id="admin-proj-title" required placeholder="Contoh: Brand Identity Redesign" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Kategori Utama</label>
+                                    <select id="admin-proj-category" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                        <option value="Graphic Design">Graphic Design</option>
+                                        <option value="Photography">Photography</option>
+                                        <option value="Video & Motion">Video & Motion</option>
+                                        <option value="IT & Digital Assets">IT & Digital Assets</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Subkategori / Tipe</label>
+                                    <input type="text" id="admin-proj-subcategory" required placeholder="misal: Packaging & Branding" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Nama Klien / Instansi</label>
+                                    <input type="text" id="admin-proj-client" required placeholder="misal: Aura Organics" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Tahun Rilis</label>
+                                    <input type="text" id="admin-proj-year" required placeholder="2026" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">URL Gambar Utama / Thumbnail (Unsplash/Web)</label>
+                                <input type="url" id="admin-proj-thumbnail" required placeholder="https://images.unsplash.com/photo-..." class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-300 mb-1">Deskripsi Karya</label>
+                                <textarea id="admin-proj-desc" rows="2" required placeholder="Penjelasan singkat mengenai konsep, proses, atau keunggulan karya..." class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Deliverables (pisahkan koma)</label>
+                                    <input type="text" id="admin-proj-deliverables" required placeholder="Guidelines, 3D Mockup, Social Kit" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-300 mb-1">Tools / Software (pisahkan koma)</label>
+                                    <input type="text" id="admin-proj-tools" required placeholder="Illustrator, Photoshop, Figma" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-rose-500">
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-end gap-3 pt-2">
+                                <button type="submit" id="save-proj-submit-btn" class="shimmer-btn px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] text-xs font-bold text-white shadow-lg">
+                                    Simpan Karya
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Project Table List -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-slate-400">Daftar Posting Karya Terpasang</h4>
+                        <div id="admin-projects-list" class="space-y-2">
+                            <!-- Dynamic Table Rows -->
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- PROJECT DETAIL MODAL -->
+    <div id="project-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
+        <div class="relative w-full max-w-4xl max-h-[90vh] bg-[#12121a] border border-white/15 rounded-3xl shadow-2xl overflow-hidden flex flex-col transform scale-95 transition-transform duration-300" id="project-modal-card">
+            <!-- Modal Header -->
+            <div class="p-4 px-6 border-b border-white/10 flex items-center justify-between bg-[#161622]">
+                <div>
+                    <span id="modal-category" class="text-[11px] font-bold text-rose-400 uppercase tracking-wider">
+                        Kategori
+                    </span>
+                    <h3 id="modal-title" class="text-lg font-extrabold text-white">Judul Proyek</h3>
+                </div>
+                <button onclick="toggleProjectModal(false)" class="p-2 rounded-full bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content -->
+            <div class="p-6 overflow-y-auto space-y-6">
+                <!-- Preview Image -->
+                <div class="relative aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
+                    <img id="modal-main-image" src="" alt="Project Preview" class="w-full h-full object-cover transition-opacity duration-300">
+                </div>
+
+                <!-- Gallery Thumbnails -->
+                <div id="modal-gallery" class="flex gap-3 overflow-x-auto pb-2">
+                    <!-- Gallery items rendered dynamically -->
+                </div>
+
+                <!-- Grid Details -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 pt-2">
+                    <div class="md:col-span-2 space-y-4">
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider">Deskripsi Proyek</h4>
+                        <p id="modal-description" class="text-sm text-slate-300 leading-relaxed"></p>
+
+                        <h4 class="text-sm font-bold text-white uppercase tracking-wider pt-2">Deliverables</h4>
+                        <ul id="modal-deliverables" class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-300">
+                            <!-- Items -->
+                        </ul>
+                    </div>
+
+                    <div class="p-4 rounded-2xl bg-white/5 border border-white/10 space-y-4 text-xs">
+                        <div>
+                            <span class="text-slate-400">Klien:</span>
+                            <div id="modal-client" class="font-bold text-white"></div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Tahun Rilis:</span>
+                            <div id="modal-year" class="font-bold text-white"></div>
+                        </div>
+                        <div>
+                            <span class="text-slate-400">Tools / Software:</span>
+                            <div id="modal-tools" class="flex flex-wrap gap-1 mt-1">
+                                <!-- Tools -->
+                            </div>
+                        </div>
+
+                        <a id="modal-link" href="#" target="_blank" rel="noreferrer" class="shimmer-btn w-full mt-2 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all">
+                            <span>Lihat Live Preview</span>
+                            <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUICK QR MODAL -->
+    <div id="qr-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden transition-opacity duration-300 opacity-0">
+        <div class="relative w-full max-w-sm bg-[#14141c] border border-white/15 rounded-3xl p-6 text-center space-y-5 shadow-2xl transform scale-95 transition-transform duration-300" id="qr-modal-card">
+            <button onclick="toggleQrModal(false)" class="absolute top-4 right-4 p-1.5 rounded-full bg-white/5 text-slate-400 hover:text-white transition-colors">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+
+            <div>
+                <div class="w-12 h-12 rounded-2xl bg-rose-950 border border-rose-500/30 flex items-center justify-center mx-auto text-rose-400 mb-2">
+                    <i data-lucide="qr-code" class="w-6 h-6"></i>
+                </div>
+                <h3 class="text-lg font-extrabold text-white">Scan Quick Contact</h3>
+                <p class="text-xs text-slate-400 mt-1">
+                    Pindai QR code di bawah menggunakan kamera smartphone untuk menyimpan vCard kontak Randy Fahmi.
+                </p>
+            </div>
+
+            <!-- SVG QR Code Vector -->
+            <div class="p-4 bg-white rounded-2xl mx-auto w-48 h-48 flex items-center justify-center shadow-inner">
+                <svg viewBox="0 0 100 100" class="w-full h-full text-slate-900 fill-current">
+                    <rect x="5" y="5" width="25" height="25" rx="3" fill="#000" />
+                    <rect x="9" y="9" width="17" height="17" fill="#fff" />
+                    <rect x="13" y="13" width="9" height="9" fill="#8b1538" />
+
+                    <rect x="70" y="5" width="25" height="25" rx="3" fill="#000" />
+                    <rect x="74" y="9" width="17" height="17" fill="#fff" />
+                    <rect x="78" y="13" width="9" height="9" fill="#8b1538" />
+
+                    <rect x="5" y="70" width="25" height="25" rx="3" fill="#000" />
+                    <rect x="9" y="74" width="17" height="17" fill="#fff" />
+                    <rect x="13" y="78" width="9" height="9" fill="#8b1538" />
+
+                    <rect x="35" y="10" width="8" height="8" />
+                    <rect x="48" y="10" width="15" height="8" />
+                    <rect x="35" y="23" width="28" height="8" />
+
+                    <rect x="10" y="35" width="80" height="8" />
+                    <rect x="40" y="48" width="20" height="20" rx="2" fill="#8b1538" />
+                    <rect x="10" y="55" width="20" height="8" />
+                    <rect x="70" y="55" width="20" height="8" />
+
+                    <rect x="35" y="75" width="15" height="15" />
+                    <rect x="55" y="75" width="35" height="8" />
+                    <rect x="70" y="88" width="20" height="7" />
+                </svg>
+            </div>
+
+            <div class="flex flex-col gap-2 pt-2">
+                <button onclick="copyLink()" class="w-full py-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold text-slate-200 flex items-center justify-center gap-2 transition-all">
+                    <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                    <span>Salin Link lynkid/randy_fahmi</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC & ANIMATION SCRIPTS -->
+    <script>
+        // DEFAULT MOCK DATA
+        const DEFAULT_PROFILE = {
+            name: "Randy Fahmi",
+            role: "Creative Visual & IT Specialist",
+            tagline: "Visual Mastery",
+            bio: "Halo! Saya Randy Fahmi, seorang desainer multidisiplin dengan rekam jejak lebih dari 9 tahun di bidang Graphic Design, Photography, Video Production, dan pengembangan Aset Digital / IT.",
+            email: "randy.fahmi@example.com",
+            phone: "+62 812-3456-7890",
+            location: "Jakarta / Indonesia",
+            lynkid: "lynkid/randy_fahmi"
+        };
+
+        const DEFAULT_PROJECTS = [
+            {
+                id: 'proj-1',
+                title: 'Aura Premium Beverage Branding & Packaging',
+                category: 'Graphic Design',
+                subcategory: 'Packaging & Branding',
+                client: 'Aura Organics Co.',
+                year: '2025',
+                thumbnail: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1000&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1563227812-0ea4c22e6cc8?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1535585209827-a15fcdbc4c2d?auto=format&fit=crop&w=1200&q=80'
+                ],
+                description: 'Comprehensive brand identity and eco-luxury packaging design for an artisanal organic beverage line targeting modern urban consumers.',
+                deliverables: ['Brand Guidelines', '3D Bottle Packaging', 'Social Media Kits', 'Retail Billboards'],
+                tools: ['Adobe Illustrator', 'Photoshop', 'Blender', 'Figma'],
+                link: 'https://behance.net'
+            },
+            {
+                id: 'proj-2',
+                title: 'Urban Architecture & Light - Editorial Shoot',
+                category: 'Photography',
+                subcategory: 'Commercial & Architectural',
+                client: 'Metropolis Design Magazine',
+                year: '2024',
+                thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80'
+                ],
+                description: 'High-contrast architectural editorial capturing geometric symmetry and golden-hour lighting across modern metropolitan skylines.',
+                deliverables: ['30+ High-Res Editorial Images', 'Color Grading Presets', 'Print Spread Layout'],
+                tools: ['Sony A7R V', 'Lightroom Classic', 'Capture One'],
+                link: 'https://unsplash.com'
+            },
+            {
+                id: 'proj-3',
+                title: 'Futuristic Cyberpunk Brand Commercial Showreel',
+                category: 'Video & Motion',
+                subcategory: 'Commercial Video',
+                client: 'NeoTech Dynamics',
+                year: '2025',
+                thumbnail: 'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1000&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1536240478700-b869070f9279?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80'
+                ],
+                description: 'Dynamic 60-second commercial showreel blending live action footage with 3D motion graphics and sound design.',
+                deliverables: ['4K Commercial Video', 'Vertical Video Cuts for Reels/TikTok', 'Custom VFX Assets'],
+                tools: ['Premiere Pro', 'After Effects', 'DaVinci Resolve', 'Cinema 4D'],
+                link: 'https://vimeo.com'
+            },
+            {
+                id: 'proj-4',
+                title: 'Next-Gen Creative Agency Web Platform',
+                category: 'IT & Digital Assets',
+                subcategory: 'Web Application & UI/UX',
+                client: 'Vanguard Studios',
+                year: '2024',
+                thumbnail: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1200&q=80',
+                    'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=1200&q=80'
+                ],
+                description: 'Ultra-fast, headless CMS driven portfolio website with custom WebGL animations and smooth page transitions.',
+                deliverables: ['Responsive Web Application', 'Custom CMS Integration', 'SEO & Analytics Optimization'],
+                tools: ['React.js', 'Next.js', 'Tailwind CSS', 'Framer Motion'],
+                link: 'https://github.com'
+            }
+        ];
+
+        // LOAD FROM LOCAL STORAGE OR USE DEFAULTS
+        let siteProfile = JSON.parse(localStorage.getItem('rf_portfolio_profile')) || DEFAULT_PROFILE;
+        let PORTFOLIO_PROJECTS = JSON.parse(localStorage.getItem('rf_portfolio_projects')) || DEFAULT_PROJECTS;
+
+        const CATEGORIES = ['All', 'Graphic Design', 'Photography', 'Video & Motion', 'IT & Digital Assets'];
+
+        // STATE
+        let currentCategory = 'All';
+        let searchQuery = '';
+
+        // INITIALIZATION
+        window.addEventListener('DOMContentLoaded', () => {
+            renderProfileToUI();
+            lucide.createIcons();
+            renderCategoryFilters();
+            renderPortfolioGrid();
+            initScrollProgress();
+            initScrollObserver();
+            initHeroParticleCanvas();
+            initCounterObserver();
+            initSecretAdminRedirectTriggers();
+        });
+
+        // REDIRECT TO SEPARATE ADMIN WEBPAGE (admin.html)
+        function initSecretAdminRedirectTriggers() {
+            if (window.location.hash === '#admin') {
+                window.location.href = 'admin.html';
+            }
+
+            // Keyboard Shortcut: Ctrl + Shift + A or Cmd + Shift + A
+            window.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                    e.preventDefault();
+                    window.open('admin.html', '_blank');
+                    showToast('Membuka Halaman Admin Web...');
+                }
+            });
+
+            // Secret Triple Click on Brand Logo (RF)
+            const brandLogo = document.getElementById('brand-logo');
+            let clickCount = 0;
+            let timer = null;
+
+            if (brandLogo) {
+                brandLogo.addEventListener('click', (e) => {
+                    clickCount++;
+                    clearTimeout(timer);
+                    if (clickCount >= 3) {
+                        e.preventDefault();
+                        window.open('admin.html', '_blank');
+                        showToast('Membuka Halaman Admin Web...');
+                        clickCount = 0;
+                    } else {
+                        timer = setTimeout(() => { clickCount = 0; }, 800);
+                    }
+                });
+            }
+        }
+
+        // UPDATE DYNAMIC PROFILE INFO ON WEBSITE
+        function renderProfileToUI() {
+            // Update initials logo
+            const initials = siteProfile.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'RF';
+            const logoEl = document.querySelector('header .w-10');
+            if (logoEl) logoEl.innerText = initials;
+
+            // Brand name
+            const brandNameEl = document.querySelector('header .font-extrabold');
+            if (brandNameEl) brandNameEl.innerText = siteProfile.name.toUpperCase();
+
+            // Brand tagline
+            const brandRoleEl = document.querySelector('header .text-\\[10px\\]');
+            if (brandRoleEl) brandRoleEl.innerText = siteProfile.role;
+
+            // Hero Role Badge
+            const roleBadgeEl = document.getElementById('hero-role-badge');
+            if (roleBadgeEl) roleBadgeEl.innerText = siteProfile.role;
+
+            // Hero Tagline Text
+            const taglineEl = document.getElementById('hero-tagline-text');
+            if (taglineEl) taglineEl.innerText = siteProfile.tagline;
+
+            // Hero Bio
+            const bioHeroEl = document.getElementById('profile-name-hero');
+            if (bioHeroEl) bioHeroEl.innerText = siteProfile.name;
+            const bioParaEl = document.getElementById('hero-bio-paragraph');
+            if (bioParaEl) {
+                bioParaEl.innerHTML = `Halo! Saya <strong class="text-white">${siteProfile.name}</strong>, ${siteProfile.bio.replace(/Halo! Saya [^,]+,\s*/i, '')}`;
+            }
+
+            // Contact Email
+            const emailEl = document.querySelector('a[href^="mailto:"]');
+            if (emailEl) {
+                emailEl.href = `mailto:${siteProfile.email}`;
+                emailEl.innerText = siteProfile.email;
+            }
+
+            // Contact Phone
+            const phoneEl = document.querySelector('a[href^="https://wa.me/"]');
+            if (phoneEl) {
+                phoneEl.innerText = siteProfile.phone;
+            }
+
+            // Location
+            const locEl = document.querySelector('#contact .fa-map-pin, #contact .lucide-map-pin')?.parentElement?.nextElementSibling?.querySelector('span');
+            if (locEl) locEl.innerText = siteProfile.location;
+
+            // Lynkid
+            const lynkidEl = document.getElementById('lynkid-handle-display');
+            if (lynkidEl) lynkidEl.innerText = siteProfile.lynkid;
+
+            // Footer
+            const footerEl = document.getElementById('footer-name-display');
+            if (footerEl) footerEl.innerText = siteProfile.name;
+        }
+
+        // SCROLL PROGRESS BAR
+        function initScrollProgress() {
+            const progressBar = document.getElementById('scroll-progress');
+            window.addEventListener('scroll', () => {
+                const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const progress = (window.scrollY / totalHeight) * 100;
+                progressBar.style.width = `${progress}%`;
+            });
+        }
+
+        // SCROLL REVEAL OBSERVER
+        function initScrollObserver() {
+            const reveals = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                    }
+                });
+            }, { threshold: 0.12 });
+
+            reveals.forEach(el => observer.observe(el));
+
+            // Skill Bars observer
+            const skillsSection = document.getElementById('skills-section');
+            if (skillsSection) {
+                const skillObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const bars = document.querySelectorAll('.skill-bar-inner');
+                            bars.forEach(bar => {
+                                const targetWidth = bar.getAttribute('data-width');
+                                bar.style.width = targetWidth;
+                            });
+                            skillObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.2 });
+                skillObserver.observe(skillsSection);
+            }
+        }
+
+        // STATS COUNTER ANIMATION
+        function initCounterObserver() {
+            const counters = document.querySelectorAll('.counter');
+            const counterObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = parseInt(entry.target.getAttribute('data-target'));
+                        let current = 0;
+                        const step = Math.ceil(target / 40);
+                        const timer = setInterval(() => {
+                            current += step;
+                            if (current >= target) {
+                                entry.target.innerText = target + '+';
+                                clearInterval(timer);
+                            } else {
+                                entry.target.innerText = current;
+                            }
+                        }, 30);
+                        counterObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            counters.forEach(c => counterObserver.observe(c));
+        }
+
+        // HERO PARTICLE CANVAS
+        function initHeroParticleCanvas() {
+            const canvas = document.getElementById('hero-canvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+
+            function resize() {
+                canvas.width = canvas.offsetWidth;
+                canvas.height = canvas.offsetHeight;
+            }
+            resize();
+            window.addEventListener('resize', resize);
+
+            const particles = [];
+            const particleCount = 45;
+
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 0.4,
+                    vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 2 + 1,
+                    alpha: Math.random() * 0.5 + 0.2
+                });
+            }
+
+            function animateCanvas() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                for (let i = 0; i < particleCount; i++) {
+                    const p = particles[i];
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                    if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(225, 29, 72, ${p.alpha})`;
+                    ctx.fill();
+
+                    // Connect lines
+                    for (let j = i + 1; j < particleCount; j++) {
+                        const p2 = particles[j];
+                        const dx = p.x - p2.x;
+                        const dy = p.y - p2.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy);
+
+                        if (dist < 120) {
+                            ctx.beginPath();
+                            ctx.moveTo(p.x, p.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.strokeStyle = `rgba(225, 29, 72, ${0.15 * (1 - dist / 120)})`;
+                            ctx.lineWidth = 0.8;
+                            ctx.stroke();
+                        }
+                    }
+                }
+                requestAnimationFrame(animateCanvas);
+            }
+            animateCanvas();
+        }
+
+        // TOAST FUNCTION
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3500);
+        }
+
+        // MOBILE MENU TOGGLE
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        }
+
+        // DOWNLOAD CV SIMULATION
+        function downloadCV() {
+            showToast('Mengunduh CV / Resume Randy Fahmi...');
+            const content = `RANDY FAHMI - Creative Visual & IT Specialist\n\nExperience: 9+ Years\nEmail: randy.fahmi@example.com\nPortfolio: lynkid/randy_fahmi\nSkills: Graphic Design, Photography, Video Editing, Web Development`;
+            const blob = new Blob([content], { type: 'text/plain' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'CV_Randy_Fahmi_Creative_IT.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // CATEGORY RENDER
+        function renderCategoryFilters() {
+            const container = document.getElementById('filter-container');
+            container.innerHTML = CATEGORIES.map(cat => {
+                const isActive = currentCategory === cat;
+                const label = cat === 'All' ? 'Semua Karya' : cat;
+                return `
+                    <button onclick="setCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all duration-300 hover:scale-105 active:scale-95 ${
+                        isActive 
+                        ? 'bg-rose-900/80 border border-rose-500 text-white shadow-lg shadow-rose-950/60'
+                        : 'bg-white/5 border border-white/10 text-slate-300 hover:bg-white/10 hover:text-white'
+                    }">
+                        ${label}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            renderCategoryFilters();
+            renderPortfolioGrid();
+        }
+
+        function handleSearch(val) {
+            searchQuery = val.toLowerCase();
+            renderPortfolioGrid();
+        }
+
+        // PORTFOLIO GRID RENDER WITH ANIMATION
+        function renderPortfolioGrid() {
+            const grid = document.getElementById('portfolio-grid');
+            
+            const filtered = PORTFOLIO_PROJECTS.filter(proj => {
+                const matchesCat = currentCategory === 'All' || proj.category === currentCategory;
+                const matchesSearch = proj.title.toLowerCase().includes(searchQuery) || 
+                                      proj.client.toLowerCase().includes(searchQuery) ||
+                                      proj.subcategory.toLowerCase().includes(searchQuery);
+                return matchesCat && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center border border-dashed border-white/10 rounded-2xl animate-in fade-in duration-300">
+                        <p class="text-slate-400 text-sm">Tidak ada karya yang sesuai dengan filter/pencarian Anda.</p>
+                        <button onclick="setCategory('All'); handleSearch(''); document.getElementById('search-input').value='';" class="mt-3 text-xs text-rose-400 hover:underline font-semibold">
+                            Reset Filter
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map((proj, idx) => `
+                <div onclick="openProjectModal('${proj.id}')" class="portfolio-card-item group cursor-pointer rounded-2xl bg-[#14141c] border border-white/10 overflow-hidden hover:border-rose-500/50 transition-all duration-500 hover:-translate-y-2 shadow-xl flex flex-col hover:shadow-rose-950/40">
+                    <div class="relative aspect-[4/3] overflow-hidden bg-slate-900">
+                        <img src="${proj.thumbnail}" alt="${proj.title}" class="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-700 ease-out">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#14141c] via-transparent to-transparent opacity-80"></div>
+
+                        <span class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[11px] font-semibold text-rose-300 shadow-md">
+                            ${proj.category}
+                        </span>
+
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 bg-black/40 backdrop-blur-[2px] transition-all duration-300">
+                            <span class="shimmer-btn px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-bold flex items-center gap-2 shadow-xl transform scale-90 group-hover:scale-100 transition-transform">
+                                <span>Lihat Detail</span>
+                                <i data-lucide="arrow-up-right" class="w-4 h-4"></i>
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-5 flex-1 flex flex-col justify-between space-y-3">
+                        <div>
+                            <div class="text-xs text-slate-400 font-medium mb-1">
+                                ${proj.client} • ${proj.year}
+                            </div>
+                            <h3 class="text-lg font-bold text-white group-hover:text-rose-300 transition-colors line-clamp-1">
+                                ${proj.title}
+                            </h3>
+                            <p class="text-slate-400 text-xs leading-relaxed mt-2 line-clamp-2">
+                                ${proj.description}
+                            </p>
+                        </div>
+
+                        <div class="flex flex-wrap gap-1.5 pt-2">
+                            ${proj.tools.slice(0, 3).map(t => `<span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[10px] text-slate-300">${t}</span>`).join('')}
+                            ${proj.tools.length > 3 ? `<span class="px-1.5 py-0.5 rounded bg-white/5 text-[10px] text-slate-400">+${proj.tools.length - 3}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        // PROJECT MODAL LOGIC WITH ANIMATION
+        function openProjectModal(id) {
+            const proj = PORTFOLIO_PROJECTS.find(p => p.id === id);
+            if (!proj) return;
+
+            document.getElementById('modal-category').innerText = `${proj.category} • ${proj.subcategory}`;
+            document.getElementById('modal-title').innerText = proj.title;
+            document.getElementById('modal-main-image').src = proj.gallery[0] || proj.thumbnail;
+            document.getElementById('modal-description').innerText = proj.description;
+            document.getElementById('modal-client').innerText = proj.client;
+            document.getElementById('modal-year').innerText = proj.year;
+            document.getElementById('modal-link').href = proj.link;
+
+            // Render deliverables
+            document.getElementById('modal-deliverables').innerHTML = proj.deliverables.map(d => `
+                <li class="flex items-center gap-2">
+                    <i data-lucide="check" class="w-4 h-4 text-rose-400"></i>
+                    <span>${d}</span>
+                </li>
+            `).join('');
+
+            // Render tools
+            document.getElementById('modal-tools').innerHTML = proj.tools.map(t => `
+                <span class="px-2 py-0.5 rounded bg-white/10 text-slate-200">${t}</span>
+            `).join('');
+
+            // Render gallery thumbnails
+            document.getElementById('modal-gallery').innerHTML = proj.gallery.map((img, idx) => `
+                <button onclick="setModalMainImage('${img}')" class="relative w-20 h-14 rounded-xl overflow-hidden border-2 border-white/10 hover:border-rose-500 transition-all flex-shrink-0 hover:scale-105 active:scale-95">
+                    <img src="${img}" class="w-full h-full object-cover">
+                </button>
+            `).join('');
+
+            lucide.createIcons();
+            toggleProjectModal(true);
+        }
+
+        function setModalMainImage(src) {
+            const img = document.getElementById('modal-main-image');
+            img.style.opacity = '0';
+            setTimeout(() => {
+                img.src = src;
+                img.style.opacity = '1';
+            }, 150);
+        }
+
+        function toggleProjectModal(show) {
+            const modal = document.getElementById('project-modal');
+            const card = document.getElementById('project-modal-card');
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    card.classList.remove('scale-95');
+                    card.classList.add('scale-100');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        // QR MODAL TOGGLE
+        function toggleQrModal(show) {
+            const modal = document.getElementById('qr-modal');
+            const card = document.getElementById('qr-modal-card');
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    card.classList.remove('scale-95');
+                    card.classList.add('scale-100');
+                }, 10);
+            } else {
+                modal.classList.add('opacity-0');
+                card.classList.remove('scale-100');
+                card.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        function copyLink() {
+            const tempInput = document.createElement('input');
+            tempInput.value = 'https://lynkid.me/randy_fahmi';
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            showToast('Tautan portofolio disalin ke clipboard!');
+        }
+
+        // CONTACT FORM SUBMIT SIMULATION
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const btn = document.getElementById('submit-btn');
+            const btnText = document.getElementById('btn-text');
+
+            btn.disabled = true;
+            btnText.innerText = 'Sending...';
+
+            setTimeout(() => {
+                btn.disabled = false;
+                btnText.innerText = 'Kirim Pesan Sekarang';
+                document.getElementById('contact-form').reset();
+                showToast('Pesan Anda berhasil terkirim! Terima kasih telah menghubungi.');
+            }, 1200);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Randy Fahmi Portfolio</title>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        burgundy: {
+                            500: '#e11d48',
+                            800: '#9f1239',
+                            900: '#8b1538',
+                            950: '#4c0519',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons CDN -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <style>
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0e0e14; }
+        ::-webkit-scrollbar-thumb { background: #2a2a38; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #8b1538; }
+
+        .shimmer-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .shimmer-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; right: 0; bottom: 0; left: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+        }
+        .shimmer-btn:hover::after {
+            animation: shimmer 1.2s ease-in-out;
+        }
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="bg-[#0b0b0e] text-slate-100 font-sans selection:bg-[#8b1538] selection:text-white min-h-screen flex flex-col md:flex-row">
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 bg-[#8b1538] text-white px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border border-pink-500/30 transition-all duration-300 opacity-0 translate-y-10 pointer-events-none">
+        <i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-300"></i>
+        <span id="toast-message" class="text-sm font-medium">Notifikasi</span>
+    </div>
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="w-full md:w-64 bg-[#12121a] border-r border-b md:border-b-0 border-white/10 p-6 flex flex-col justify-between shrink-0">
+        <div class="space-y-8">
+            <!-- Brand / Admin Header -->
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#8b1538] to-[#e11d48] flex items-center justify-center font-black text-white shadow-lg shadow-rose-950">
+                    RF
+                </div>
+                <div>
+                    <h1 class="text-sm font-extrabold tracking-wider text-white uppercase">Admin Portal</h1>
+                    <p class="text-[10px] text-rose-400 font-semibold tracking-widest uppercase">CMS & Portofolio Manager</p>
+                </div>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="space-y-1">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="w-full py-3 px-4 rounded-xl text-xs font-bold flex items-center gap-3 transition-all bg-rose-900/80 text-white border border-rose-500/40 shadow-lg shadow-rose-950/50">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+                    <span>Overview & Stats</span>
+                </button>
+
+                <button onclick="switchTab('profile')" id="nav-profile" class="w-full py-3 px-4 rounded-xl text-xs font-bold flex items-center gap-3 transition-all text-slate-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="user-cog" class="w-4 h-4"></i>
+                    <span>Edit Profil & Identitas</span>
+                </button>
+
+                <button onclick="switchTab('projects')" id="nav-projects" class="w-full py-3 px-4 rounded-xl text-xs font-bold flex items-center gap-3 transition-all text-slate-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="folder-kanban" class="w-4 h-4"></i>
+                    <span>Kelola Karya & Posting</span>
+                </button>
+
+                <button onclick="switchTab('settings')" id="nav-settings" class="w-full py-3 px-4 rounded-xl text-xs font-bold flex items-center gap-3 transition-all text-slate-400 hover:text-white hover:bg-white/5">
+                    <i data-lucide="database" class="w-4 h-4"></i>
+                    <span>Backup & Import Data</span>
+                </button>
+            </nav>
+        </div>
+
+        <!-- External Web Link -->
+        <div class="pt-6 border-t border-white/10 mt-6 md:mt-0">
+            <a href="index.html" target="_blank" class="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-slate-200 text-xs font-bold flex items-center justify-center gap-2 transition-all">
+                <span>Lihat Website Portofolio</span>
+                <i data-lucide="external-link" class="w-3.5 h-3.5 text-rose-400"></i>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <main class="flex-1 p-6 md:p-10 overflow-y-auto max-w-6xl mx-auto w-full space-y-8">
+
+        <!-- TAB 1: OVERVIEW DASHBOARD -->
+        <section id="tab-content-dashboard" class="space-y-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/10 pb-6">
+                <div>
+                    <h2 class="text-2xl font-black text-white">Ringkasan Sistem Portofolio</h2>
+                    <p class="text-xs text-slate-400 mt-1">Status postingan karya dan data konfigurasi profil saat ini</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span>Data Synced (LocalStorage)</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Stats Metric Cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                <div class="p-5 rounded-2xl bg-[#14141c] border border-white/10 space-y-2">
+                    <div class="text-slate-400 text-xs font-medium">Total Karya Diposting</div>
+                    <div id="stat-total-projects" class="text-3xl font-black text-white">0</div>
+                    <div class="text-[11px] text-rose-400 font-semibold">Aktif di website</div>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-[#14141c] border border-white/10 space-y-2">
+                    <div class="text-slate-400 text-xs font-medium">Graphic Design</div>
+                    <div id="stat-design-count" class="text-3xl font-black text-rose-400">0</div>
+                    <div class="text-[11px] text-slate-500">Kategori branding & visual</div>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-[#14141c] border border-white/10 space-y-2">
+                    <div class="text-slate-400 text-xs font-medium">Photography & Video</div>
+                    <div id="stat-media-count" class="text-3xl font-black text-amber-400">0</div>
+                    <div class="text-[11px] text-slate-500">Kategori komersial & motion</div>
+                </div>
+
+                <div class="p-5 rounded-2xl bg-[#14141c] border border-white/10 space-y-2">
+                    <div class="text-slate-400 text-xs font-medium">IT & Digital Assets</div>
+                    <div id="stat-it-count" class="text-3xl font-black text-emerald-400">0</div>
+                    <div class="text-[11px] text-slate-500">Kategori web & sistem</div>
+                </div>
+            </div>
+
+            <!-- Quick Profile Snapshot Card -->
+            <div class="p-6 rounded-3xl bg-[#14141c] border border-white/10 space-y-4">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h3 class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4 text-rose-400"></i>
+                        <span>Profil Pemilik Portofolio Saat Ini</span>
+                    </h3>
+                    <button onclick="switchTab('profile')" class="text-xs font-bold text-rose-400 hover:underline">
+                        Edit Profil →
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                    <div>
+                        <span class="text-slate-400">Nama Lengkap:</span>
+                        <div id="dash-prof-name" class="font-bold text-white text-sm mt-0.5">-</div>
+                    </div>
+                    <div>
+                        <span class="text-slate-400">Role / Badge:</span>
+                        <div id="dash-prof-role" class="font-bold text-white text-sm mt-0.5">-</div>
+                    </div>
+                    <div>
+                        <span class="text-slate-400">Email Kontak:</span>
+                        <div id="dash-prof-email" class="font-bold text-white text-sm mt-0.5">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Shortcut -->
+            <div class="p-6 rounded-3xl bg-gradient-to-r from-rose-950/60 via-[#14141c] to-[#14141c] border border-rose-500/30 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-base font-bold text-white">Ingin Memposting Karya Baru?</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Tambahkan hasil karya desain, foto, video, atau web project Anda secara instan.</p>
+                </div>
+                <button onclick="switchTab('projects'); resetProjectForm();" class="shimmer-btn px-6 py-3 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] text-xs font-bold text-white shadow-lg shrink-0">
+                    + Tambah Karya Sekarang
+                </button>
+            </div>
+        </section>
+
+        <!-- TAB 2: EDIT PROFIL & IDENTITAS -->
+        <section id="tab-content-profile" class="space-y-6 hidden">
+            <div class="border-b border-white/10 pb-6">
+                <h2 class="text-2xl font-black text-white">Edit Identitas & Profil Website</h2>
+                <p class="text-xs text-slate-400 mt-1">Perubahan pada form ini akan langsung memperbarui nama dan identitas pada website portofolio utama.</p>
+            </div>
+
+            <form onsubmit="handleSaveProfile(event)" class="bg-[#14141c] border border-white/10 rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Nama Lengkap Pemilik</label>
+                        <input type="text" id="admin-profile-name" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Spesialisasi / Role Badge</label>
+                        <input type="text" id="admin-profile-role" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Tagline Hero (Di Bawah Judul Utama)</label>
+                    <input type="text" id="admin-profile-tagline" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Bio Singkat Perkenalan (Hero Section)</label>
+                    <textarea id="admin-profile-bio" rows="4" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors resize-none"></textarea>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Email Profesional</label>
+                        <input type="email" id="admin-profile-email" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">No. WhatsApp / HP</label>
+                        <input type="text" id="admin-profile-phone" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-2">Domisili</label>
+                        <input type="text" id="admin-profile-location" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-300 mb-2">Lynkid Handle / Profile Hub</label>
+                    <input type="text" id="admin-profile-lynkid" required class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-rose-500 transition-colors">
+                </div>
+
+                <div class="pt-4 border-t border-white/10 flex items-center justify-end gap-4">
+                    <button type="submit" class="shimmer-btn px-8 py-3.5 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] text-xs font-bold text-white shadow-lg">
+                        Simpan Perubahan Profil
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- TAB 3: KELOLA PORTOFOLIO & POSTING -->
+        <section id="tab-content-projects" class="space-y-8 hidden">
+            <div class="border-b border-white/10 pb-6">
+                <h2 class="text-2xl font-black text-white">Manajemen Portofolio & Posting</h2>
+                <p class="text-xs text-slate-400 mt-1">Tambah karya baru atau edit karya yang sudah ada secara langsung.</p>
+            </div>
+
+            <!-- Form Posting / Edit -->
+            <div class="bg-[#14141c] border border-white/10 rounded-3xl p-6 md:p-8 space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h3 id="form-project-header-title" class="text-base font-bold text-white flex items-center gap-2">
+                        <i data-lucide="plus-circle" class="w-4 h-4 text-rose-400"></i>
+                        <span>Posting Karya Baru</span>
+                    </h3>
+                    <button id="cancel-edit-btn" onclick="resetProjectForm()" type="button" class="text-xs text-rose-400 hover:underline hidden font-semibold">
+                        Batal Edit
+                    </button>
+                </div>
+
+                <form onsubmit="handleSaveProject(event)" class="space-y-5">
+                    <input type="hidden" id="admin-proj-id" value="">
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Judul Karya / Proyek</label>
+                            <input type="text" id="admin-proj-title" required placeholder="Contoh: Aura Beverage Branding" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Kategori Utama</label>
+                            <select id="admin-proj-category" class="w-full bg-[#1c1c28] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                                <option value="Graphic Design">Graphic Design</option>
+                                <option value="Photography">Photography</option>
+                                <option value="Video & Motion">Video & Motion</option>
+                                <option value="IT & Digital Assets">IT & Digital Assets</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Subkategori / Tipe</label>
+                            <input type="text" id="admin-proj-subcategory" required placeholder="misal: Packaging & Branding" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Nama Klien / Instansi</label>
+                            <input type="text" id="admin-proj-client" required placeholder="misal: Aura Organics" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tahun Rilis</label>
+                            <input type="text" id="admin-proj-year" required placeholder="2026" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">URL Gambar Utama / Thumbnail (Unsplash/Web)</label>
+                        <input type="url" id="admin-proj-thumbnail" required placeholder="https://images.unsplash.com/photo-..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-300 mb-1.5">Deskripsi Penjelasan Karya</label>
+                        <textarea id="admin-proj-desc" rows="3" required placeholder="Penjelasan singkat mengenai konsep, proses, atau keunggulan karya..." class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500 resize-none"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Deliverables (pisahkan dengan koma)</label>
+                            <input type="text" id="admin-proj-deliverables" required placeholder="Brand Guidelines, 3D Mockup, Social Kit" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-300 mb-1.5">Tools / Software (pisahkan dengan koma)</label>
+                            <input type="text" id="admin-proj-tools" required placeholder="Illustrator, Photoshop, Figma" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-end gap-3 pt-3">
+                        <button type="submit" id="submit-proj-btn" class="shimmer-btn px-8 py-3 rounded-xl bg-gradient-to-r from-[#8b1538] to-[#e11d48] text-xs font-bold text-white shadow-lg">
+                            Simpan Karya
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- List Table -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-sm font-bold text-white uppercase tracking-wider">Daftar Posting Karya Terpasang</h3>
+                    <div class="relative w-64">
+                        <i data-lucide="search" class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"></i>
+                        <input type="text" id="search-proj-input" oninput="renderProjectsList()" placeholder="Cari karya..." class="w-full bg-white/5 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-white focus:outline-none focus:border-rose-500">
+                    </div>
+                </div>
+
+                <div id="admin-projects-container" class="space-y-3">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: BACKUP & SETTINGS -->
+        <section id="tab-content-settings" class="space-y-6 hidden">
+            <div class="border-b border-white/10 pb-6">
+                <h2 class="text-2xl font-black text-white">Backup & Pemeliharaan Data</h2>
+                <p class="text-xs text-slate-400 mt-1">Ekspor seluruh data portofolio ke file JSON atau reset ke versi demo awal.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Backup Export -->
+                <div class="p-6 rounded-3xl bg-[#14141c] border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 rounded-xl bg-rose-950 text-rose-400">
+                            <i data-lucide="download" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Ekspor Data Portofolio</h3>
+                            <p class="text-xs text-slate-400">Unduh data profil dan karya ke file JSON</p>
+                        </div>
+                    </div>
+                    <button onclick="exportDataJSON()" class="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-xs font-bold text-slate-200 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="file-json" class="w-4 h-4 text-rose-400"></i>
+                        <span>Unduh File Backup (JSON)</span>
+                    </button>
+                </div>
+
+                <!-- Reset Demo Data -->
+                <div class="p-6 rounded-3xl bg-[#14141c] border border-white/10 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <div class="p-2.5 rounded-xl bg-red-950 text-red-400">
+                            <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-white">Reset ke Data Default</h3>
+                            <p class="text-xs text-slate-400">Kembalikan seluruh profil & postingan ke versi demo</p>
+                        </div>
+                    </div>
+                    <button onclick="resetDefaultData()" class="w-full py-3 rounded-xl bg-red-950/40 border border-red-500/30 hover:bg-red-900/40 text-xs font-bold text-red-300 transition-all flex items-center justify-center gap-2">
+                        <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                        <span>Reset Seluruh Data</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JS LOGIC FOR ADMIN PORTAL -->
+    <script>
+        // DEFAULT DATA
+        const DEFAULT_PROFILE = {
+            name: "Randy Fahmi",
+            role: "Creative Visual & IT Specialist",
+            tagline: "Visual Mastery",
+            bio: "Halo! Saya Randy Fahmi, seorang desainer multidisiplin dengan rekam jejak lebih dari 9 tahun di bidang Graphic Design, Photography, Video Production, dan pengembangan Aset Digital / IT.",
+            email: "randy.fahmi@example.com",
+            phone: "+62 812-3456-7890",
+            location: "Jakarta / Indonesia",
+            lynkid: "lynkid/randy_fahmi"
+        };
+
+        const DEFAULT_PROJECTS = [
+            {
+                id: 'proj-1',
+                title: 'Aura Premium Beverage Branding & Packaging',
+                category: 'Graphic Design',
+                subcategory: 'Packaging & Branding',
+                client: 'Aura Organics Co.',
+                year: '2025',
+                thumbnail: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1000&q=80',
+                gallery: ['https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?auto=format&fit=crop&w=1200&q=80'],
+                description: 'Comprehensive brand identity and eco-luxury packaging design for an artisanal organic beverage line targeting modern urban consumers.',
+                deliverables: ['Brand Guidelines', '3D Bottle Packaging', 'Social Media Kits'],
+                tools: ['Adobe Illustrator', 'Photoshop', 'Blender'],
+                link: 'https://behance.net'
+            },
+            {
+                id: 'proj-2',
+                title: 'Urban Architecture & Light - Editorial Shoot',
+                category: 'Photography',
+                subcategory: 'Commercial & Architectural',
+                client: 'Metropolis Design Magazine',
+                year: '2024',
+                thumbnail: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80',
+                gallery: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1200&q=80'],
+                description: 'High-contrast architectural editorial capturing geometric symmetry and golden-hour lighting across modern metropolitan skylines.',
+                deliverables: ['30+ High-Res Editorial Images', 'Color Grading Presets'],
+                tools: ['Sony A7R V', 'Lightroom Classic'],
+                link: 'https://unsplash.com'
+            }
+        ];
+
+        let siteProfile = JSON.parse(localStorage.getItem('rf_portfolio_profile')) || DEFAULT_PROFILE;
+        let PORTFOLIO_PROJECTS = JSON.parse(localStorage.getItem('rf_portfolio_projects')) || DEFAULT_PROJECTS;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            populateProfileForm();
+            updateDashboardOverview();
+            renderProjectsList();
+        });
+
+        // TOAST FUNCTION
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            toastMsg.innerText = msg;
+            toast.classList.remove('opacity-0', 'translate-y-10', 'pointer-events-none');
+            toast.classList.add('opacity-100', 'translate-y-0');
+
+            setTimeout(() => {
+                toast.classList.remove('opacity-100', 'translate-y-0');
+                toast.classList.add('opacity-0', 'translate-y-10', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // NAVIGATION TAB SWITCHER
+        function switchTab(tab) {
+            const tabs = ['dashboard', 'profile', 'projects', 'settings'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`nav-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+
+                if (t === tab) {
+                    btn.className = "w-full py-3 px-4 rounded-xl text-xs font-bold flex items-center gap-3 transition-all bg-rose-900/80 text-white border border-rose-500/40 shadow-lg shadow-rose-950/50";
+                    content.classList.remove('hidden');
+                } else {
+                    btn.className = "w-full py-3 px-4 rounded-xl text-xs font-bold flex items-center gap-3 transition-all text-slate-400 hover:text-white hover:bg-white/5";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        // DASHBOARD OVERVIEW STATS
+        function updateDashboardOverview() {
+            document.getElementById('stat-total-projects').innerText = PORTFOLIO_PROJECTS.length;
+            document.getElementById('stat-design-count').innerText = PORTFOLIO_PROJECTS.filter(p => p.category === 'Graphic Design').length;
+            document.getElementById('stat-media-count').innerText = PORTFOLIO_PROJECTS.filter(p => p.category === 'Photography' || p.category === 'Video & Motion').length;
+            document.getElementById('stat-it-count').innerText = PORTFOLIO_PROJECTS.filter(p => p.category === 'IT & Digital Assets').length;
+
+            document.getElementById('dash-prof-name').innerText = siteProfile.name;
+            document.getElementById('dash-prof-role').innerText = siteProfile.role;
+            document.getElementById('dash-prof-email').innerText = siteProfile.email;
+        }
+
+        // PROFILE FORM LOGIC
+        function populateProfileForm() {
+            document.getElementById('admin-profile-name').value = siteProfile.name;
+            document.getElementById('admin-profile-role').value = siteProfile.role;
+            document.getElementById('admin-profile-tagline').value = siteProfile.tagline;
+            document.getElementById('admin-profile-bio').value = siteProfile.bio;
+            document.getElementById('admin-profile-email').value = siteProfile.email;
+            document.getElementById('admin-profile-phone').value = siteProfile.phone;
+            document.getElementById('admin-profile-location').value = siteProfile.location;
+            document.getElementById('admin-profile-lynkid').value = siteProfile.lynkid;
+        }
+
+        function handleSaveProfile(e) {
+            e.preventDefault();
+            siteProfile = {
+                name: document.getElementById('admin-profile-name').value,
+                role: document.getElementById('admin-profile-role').value,
+                tagline: document.getElementById('admin-profile-tagline').value,
+                bio: document.getElementById('admin-profile-bio').value,
+                email: document.getElementById('admin-profile-email').value,
+                phone: document.getElementById('admin-profile-phone').value,
+                location: document.getElementById('admin-profile-location').value,
+                lynkid: document.getElementById('admin-profile-lynkid').value
+            };
+
+            localStorage.setItem('rf_portfolio_profile', JSON.stringify(siteProfile));
+            updateDashboardOverview();
+            showToast('Profil & Identitas berhasil diperbarui!');
+        }
+
+        // PROJECT CRUD LOGIC
+        function renderProjectsList() {
+            const container = document.getElementById('admin-projects-container');
+            const search = (document.getElementById('search-proj-input')?.value || '').toLowerCase();
+
+            const filtered = PORTFOLIO_PROJECTS.filter(p => 
+                p.title.toLowerCase().includes(search) || 
+                p.client.toLowerCase().includes(search) ||
+                p.category.toLowerCase().includes(search)
+            );
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="p-6 rounded-2xl bg-[#14141c] border border-white/10 text-center text-xs text-slate-500">Belum ada karya yang sesuai.</div>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(p => `
+                <div class="p-4 rounded-2xl bg-[#14141c] border border-white/10 flex items-center justify-between gap-4 hover:border-rose-500/30 transition-colors">
+                    <div class="flex items-center gap-4 overflow-hidden">
+                        <img src="${p.thumbnail}" class="w-14 h-12 rounded-xl object-cover shrink-0">
+                        <div class="truncate">
+                            <h4 class="text-xs font-bold text-white truncate">${p.title}</h4>
+                            <p class="text-[11px] text-rose-400 font-medium">${p.category} • Klien: ${p.client} (${p.year})</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2 shrink-0">
+                        <button onclick="editProject('${p.id}')" class="p-2 rounded-xl bg-rose-950/80 text-rose-300 hover:bg-rose-900 border border-rose-500/30 text-xs flex items-center gap-1.5 font-semibold">
+                            <i data-lucide="edit-3" class="w-3.5 h-3.5"></i>
+                            <span class="hidden sm:inline">Edit</span>
+                        </button>
+                        <button onclick="deleteProject('${p.id}')" class="p-2 rounded-xl bg-red-950/80 text-red-300 hover:bg-red-900 border border-red-500/30 text-xs flex items-center gap-1.5 font-semibold">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            lucide.createIcons();
+        }
+
+        function handleSaveProject(e) {
+            e.preventDefault();
+            const projId = document.getElementById('admin-proj-id').value;
+            const title = document.getElementById('admin-proj-title').value;
+            const category = document.getElementById('admin-proj-category').value;
+            const subcategory = document.getElementById('admin-proj-subcategory').value;
+            const client = document.getElementById('admin-proj-client').value;
+            const year = document.getElementById('admin-proj-year').value;
+            const thumbnail = document.getElementById('admin-proj-thumbnail').value;
+            const description = document.getElementById('admin-proj-desc').value;
+            const deliverables = document.getElementById('admin-proj-deliverables').value.split(',').map(s => s.trim()).filter(Boolean);
+            const tools = document.getElementById('admin-proj-tools').value.split(',').map(s => s.trim()).filter(Boolean);
+
+            if (projId) {
+                const idx = PORTFOLIO_PROJECTS.findIndex(p => p.id === projId);
+                if (idx !== -1) {
+                    PORTFOLIO_PROJECTS[idx] = { ...PORTFOLIO_PROJECTS[idx], title, category, subcategory, client, year, thumbnail, description, deliverables, tools };
+                    showToast('Detail karya berhasil diperbarui!');
+                }
+            } else {
+                const newProj = {
+                    id: 'proj-' + Date.now(),
+                    title, category, subcategory, client, year, thumbnail,
+                    gallery: [thumbnail],
+                    description, deliverables, tools,
+                    link: '#'
+                };
+                PORTFOLIO_PROJECTS.unshift(newProj);
+                showToast('Karya baru berhasil diposting!');
+            }
+
+            localStorage.setItem('rf_portfolio_projects', JSON.stringify(PORTFOLIO_PROJECTS));
+            updateDashboardOverview();
+            renderProjectsList();
+            resetProjectForm();
+        }
+
+        function editProject(id) {
+            const p = PORTFOLIO_PROJECTS.find(item => item.id === id);
+            if (!p) return;
+
+            document.getElementById('admin-proj-id').value = p.id;
+            document.getElementById('admin-proj-title').value = p.title;
+            document.getElementById('admin-proj-category').value = p.category;
+            document.getElementById('admin-proj-subcategory').value = p.subcategory;
+            document.getElementById('admin-proj-client').value = p.client;
+            document.getElementById('admin-proj-year').value = p.year;
+            document.getElementById('admin-proj-thumbnail').value = p.thumbnail;
+            document.getElementById('admin-proj-desc').value = p.description;
+            document.getElementById('admin-proj-deliverables').value = p.deliverables.join(', ');
+            document.getElementById('admin-proj-tools').value = p.tools.join(', ');
+
+            document.getElementById('form-project-header-title').innerText = "Edit Detail Karya";
+            document.getElementById('submit-proj-btn').innerText = "Simpan Perubahan";
+            document.getElementById('cancel-edit-btn').classList.remove('hidden');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function deleteProject(id) {
+            if (confirm('Apakah Anda yakin ingin menghapus postingan karya ini?')) {
+                PORTFOLIO_PROJECTS = PORTFOLIO_PROJECTS.filter(p => p.id !== id);
+                localStorage.setItem('rf_portfolio_projects', JSON.stringify(PORTFOLIO_PROJECTS));
+                updateDashboardOverview();
+                renderProjectsList();
+                showToast('Karya berhasil dihapus!');
+            }
+        }
+
+        function resetProjectForm() {
+            document.getElementById('admin-proj-id').value = "";
+            document.getElementById('admin-proj-title').value = "";
+            document.getElementById('admin-proj-subcategory').value = "";
+            document.getElementById('admin-proj-client').value = "";
+            document.getElementById('admin-proj-year').value = "";
+            document.getElementById('admin-proj-thumbnail').value = "";
+            document.getElementById('admin-proj-desc').value = "";
+            document.getElementById('admin-proj-deliverables').value = "";
+            document.getElementById('admin-proj-tools').value = "";
+
+            document.getElementById('form-project-header-title').innerText = "Posting Karya Baru";
+            document.getElementById('submit-proj-btn').innerText = "Simpan Karya";
+            document.getElementById('cancel-edit-btn').classList.add('hidden');
+        }
+
+        function exportDataJSON() {
+            const data = {
+                profile: siteProfile,
+                projects: PORTFOLIO_PROJECTS
+            };
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `Portfolio_Backup_${Date.now()}.json`;
+            link.click();
+            showToast('Backup data berhasil diunduh!');
+        }
+
+        function resetDefaultData() {
+            if (confirm('Apakah Anda yakin ingin mengembalikan seluruh profil dan data karya ke versi default demo?')) {
+                localStorage.removeItem('rf_portfolio_profile');
+                localStorage.removeItem('rf_portfolio_projects');
+                siteProfile = { ...DEFAULT_PROFILE };
+                PORTFOLIO_PROJECTS = [ ...DEFAULT_PROJECTS ];
+                populateProfileForm();
+                updateDashboardOverview();
+                renderProjectsList();
+                showToast('Data berhasil di-reset!');
+            }
+        }
+    </script>
+</body>
+</html>
